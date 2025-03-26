@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "tsc && node dist/app.js",
-    "dev": " npxts-node-dev --respawn src/app.ts",
+    "dev": " npx ts-node-dev --respawn src/app.ts",
     "test": "jest",
     "lint": "eslint . --ext .ts"
   },
