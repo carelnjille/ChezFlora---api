@@ -7,7 +7,7 @@
 "typeRoots": ["./node_modules/@types", "types"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-
+    "esModuleInterop": true,
     "outDir": "./dist"
   },
   "include": ["src/**/*", "types/types.d.ts"],
