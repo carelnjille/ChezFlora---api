@@ -1,5 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from '../config/db';
+import { DataTypes, Model, Sequelize } from 'sequelize';
 
 class BlogPost extends Model {
   public post_id!: number;
@@ -9,48 +8,51 @@ class BlogPost extends Model {
   public image_url!: string;
   public created_at!: Date;
   public updated_at!: Date;
-}
 
-BlogPost.init(
-  {
-    post_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    author_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    image_url: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    sequelize,
-    modelName: 'BlogPost',
-    tableName: 'blog_posts',
-    timestamps: false, // Désactiver les timestamps natifs de Sequelize
+  // Ajout de la méthode initialize()
+  static initialize(sequelize: Sequelize) {
+    BlogPost.init(
+      {
+        post_id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        title: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        content: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        author_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        image_url: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        created_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+        updated_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+      },
+      {
+        sequelize,
+        modelName: 'BlogPost',
+        tableName: 'blog_posts',
+        timestamps: false, // Désactiver les timestamps natifs de Sequelize
+      }
+    );
   }
-);
+}
 
 export default BlogPost;

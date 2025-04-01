@@ -6,7 +6,12 @@ import Quote from './Quote';
 import BlogPost from './BlogPost';
 import Comment from './Comment';
 
-// Configuration de la connexion à la base de données
+// Définition d'une interface pour typer les modèles
+interface ModelWithAssociations {
+  initialize: (sequelize: Sequelize) => void;
+  associate?: (models: any) => void; // La méthode associate est optionnelle
+}
+
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: process.env.DB_HOST,
@@ -14,25 +19,29 @@ const sequelize = new Sequelize({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  logging: false, // Désactive les logs SQL
+  logging: false,
 });
 
-// Initialisation des modèles
-const models = {
-  User: User.initialize(sequelize),
-  Product: Product.initialize(sequelize),
-  Order: Order.initialize(sequelize),
-  Quote: Quote.initialize(sequelize),
-  BlogPost: BlogPost.initialize(sequelize),
-  Comment: Comment.initialize(sequelize),
+// Liste des modèles
+const models: { [key: string]: ModelWithAssociations } = {
+  User,
+  Product,
+  Order,
+  Quote,
+  BlogPost,
+  Comment,
 };
 
-// Association des modèles
+// Initialisation des modèles
+Object.values(models).forEach((model) => {
+  model.initialize(sequelize);
+});
+
+// Association des modèles (si applicable)
 Object.values(models).forEach((model) => {
   if (model.associate) {
     model.associate(models);
   }
 });
 
-// Exportation de l'instance Sequelize et des modèles
 export { sequelize, models };

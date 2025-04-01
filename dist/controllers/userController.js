@@ -18,9 +18,9 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, username, first_name, last_name, role } = req.body;
+        const { email, password, username, role } = req.body;
         const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-        const user = yield User_1.default.create({ email, password_hash: hashedPassword, username, first_name, last_name, role });
+        const user = yield User_1.default.create({ email, password_hash: hashedPassword, username, role });
         res.status(201).json(user);
     }
     catch (error) {

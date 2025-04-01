@@ -16,10 +16,14 @@ exports.logoutUser = exports.loginUser = exports.registerUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
-// Fonction pour l'inscription (register)
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, username, first_name, last_name, role } = req.body;
+        const { email, password, username, role } = req.body;
+        // Validation des données d'entrée
+        if (!email || !password || !username) {
+            res.status(400).json({ message: 'Missing required fields: email, password, username' });
+            return;
+        }
         // Vérification si l'utilisateur existe déjà
         const existingUser = yield User_1.default.findOne({ where: { email } });
         if (existingUser) {
@@ -32,17 +36,22 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // Création de l'utilisateur avec le mot de passe hashé
         const user = yield User_1.default.create({
             email,
-            password_hash: hashedPassword, // Stockage du mot de passe hashé
+            password_hash: hashedPassword, // Assurez-vous que votre modèle utilise `password` et non `password_hash`
             username,
-            first_name,
-            last_name,
-            role,
+            role: role || 'client', // Utilise le rôle fourni ou 'client' par défaut
         });
-        // Réponse réussie
-        res.status(201).json({ message: 'User registered successfully', user });
+        // Réponse réussie (ne renvoie pas le mot de passe hashé)
+        const userResponse = {
+            id: user.user_id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+        };
+        res.status(201).json({ message: 'User registered successfully', user: userResponse });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error registering user', error });
+        console.error('Error during registration:', error); // Log l'erreur pour le débogage
+        res.status(500).json({ message: 'Error registering user', error: error });
     }
 });
 exports.registerUser = registerUser;

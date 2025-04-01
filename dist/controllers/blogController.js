@@ -14,43 +14,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllBlogPosts = exports.getBlogPostById = exports.addBlogPost = void 0;
 const BlogPost_1 = __importDefault(require("../models/BlogPost"));
-// Ajouter un article de blog
 const addBlogPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, content, author_id, image_url } = req.body;
+        // Validation des données
+        if (!title || !content || !author_id || !image_url) {
+            res.status(400).json({ message: 'Missing required fields: title, content, author_id, image_url' });
+            return;
+        }
+        // Créer l'article de blog
         const blogPost = yield BlogPost_1.default.create({ title, content, author_id, image_url });
-        res.status(201).json(blogPost);
+        // Réponse réussie
+        res.status(201).json({
+            message: 'Blog post created successfully',
+            blogPost,
+        });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error adding blog post', error });
+        console.error('Error adding blog post:', error); // Log l'erreur pour le débogage
+        res.status(500).json({ message: 'Error adding blog post', error: error });
     }
 });
 exports.addBlogPost = addBlogPost;
-// Récupérer un article de blog par ID
 const getBlogPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { post_id } = req.params;
+        // Trouver l'article de blog par son ID
         const blogPost = yield BlogPost_1.default.findByPk(post_id);
         if (blogPost) {
+            // Réponse réussie
             res.status(200).json(blogPost);
         }
         else {
+            // Si l'article n'existe pas
             res.status(404).json({ message: 'Blog post not found' });
         }
     }
     catch (error) {
-        res.status(500).json({ message: 'Error fetching blog post', error });
+        console.error('Error fetching blog post:', error); // Log l'erreur pour le débogage
+        res.status(500).json({ message: 'Error fetching blog post', error: error });
     }
 });
 exports.getBlogPostById = getBlogPostById;
-// Récupérer tous les articles de blog
 const getAllBlogPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Récupérer tous les articles de blog
         const blogPosts = yield BlogPost_1.default.findAll();
+        // Réponse réussie
         res.status(200).json(blogPosts);
     }
     catch (error) {
-        res.status(500).json({ message: 'Error fetching blog posts', error });
+        console.error('Error fetching blog posts:', error); // Log l'erreur pour le débogage
+        res.status(500).json({ message: 'Error fetching blog posts', error: error });
     }
 });
 exports.getAllBlogPosts = getAllBlogPosts;
